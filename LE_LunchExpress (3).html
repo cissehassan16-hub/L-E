@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>L.E</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#080808;
+  --orange:#FF5C00;
+  --orange2:#FF8A00;
+  --red:#D93025;
+  --white:#F5F0EA;
+  --gray:#111111;
+  --gray2:#1A1A1A;
+  --gray3:#252525;
+  --gray4:#333333;
+  --muted:#666666;
+  --muted2:#999999;
+  --border:rgba(255,92,0,0.12);
+  --border2:rgba(255,255,255,0.06);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden}
+input,button,select,textarea{font-family:'DM Sans',sans-serif}
+button{cursor:pointer;border:none;outline:none}
+input,textarea{outline:none;border:none;background:none}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--gray)}
+::-webkit-scrollbar-thumb{background:var(--orange);border-radius:2px}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.4;
+}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;
+  background:rgba(8,8,8,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border2);
+  animation:fadeDown 0.6s ease both;
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px;letter-spacing:6px;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  cursor:pointer;user-select:none;
+}
+.logo span{font-size:11px;display:block;letter-spacing:4px;margin-top:-6px;background:linear-gradient(135deg,var(--orange2),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'DM Sans',sans-serif;font-weight:300}
+
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-tab{
+  padding:8px 20px;border-radius:8px;font-size:13px;font-weight:500;
+  color:var(--muted2);background:transparent;
+  border:1px solid transparent;
+  transition:all 0.2s;letter-spacing:0.3px;
+}
+.nav-tab:hover{color:var(--white);background:var(--gray2)}
+.nav-tab.active{color:var(--orange);background:rgba(255,92,0,0.1);border-color:rgba(255,92,0,0.25)}
+
+.cart-btn{
+  position:relative;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 22px;border-radius:10px;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;font-size:13px;font-weight:600;
+  transition:opacity 0.2s,transform 0.15s;
+  letter-spacing:0.3px;
+}
+.cart-btn:hover{opacity:0.88;transform:translateY(-1px)}
+.cart-badge{
+  background:#fff;color:var(--orange);
+  border-radius:50%;width:20px;height:20px;
+  font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── HERO ── */
+#hero{
+  padding:120px 2.5rem 60px;
+  text-align:center;
+  position:relative;
+  border-bottom:1px solid var(--border2);
+  overflow:hidden;
+}
+.hero-glow{
+  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
+  width:600px;height:400px;border-radius:50%;
+  background:radial-gradient(ellipse, rgba(255,92,0,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(64px,10vw,120px);
+  line-height:0.88;letter-spacing:8px;
+  margin-bottom:1.5rem;
+  animation:heroIn 0.8s cubic-bezier(0.16,1,0.3,1) both 0.1s;
+}
+@keyframes heroIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero-title .line1{
+  display:block;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-title .line2{display:block;color:var(--white)}
+.hero-sub{
+  font-size:12px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:2.5rem;
+  animation:heroIn 0.8s cubic-bezier(0.16,1,0.3,1) both 0.25s;
+}
+.hero-divider{
+  width:1px;height:40px;background:linear-gradient(to bottom,var(--orange),transparent);
+  margin:0 auto 2.5rem;
+  animation:heroIn 0.8s ease both 0.35s;
+}
+
+/* ── SEARCH ── */
+.search-wrap{
+  position:relative;max-width:560px;margin:0 auto;
+  animation:heroIn 0.8s ease both 0.4s;
+}
+.search-row{display:flex;gap:10px;align-items:stretch}
+.search-input-wrap{
+  flex:1;position:relative;
+  background:var(--gray2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;align-items:center;
+  transition:border-color 0.2s;
+}
+.search-input-wrap:focus-within{border-color:rgba(255,92,0,0.5)}
+.search-icon{
+  padding:0 14px;color:var(--muted);font-size:18px;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.search-input{
+  flex:1;padding:14px 0;font-size:15px;color:var(--white);
+  background:transparent;
+}
+.search-input::placeholder{color:var(--muted)}
+.search-clear{
+  padding:0 14px;color:var(--muted);font-size:16px;cursor:pointer;
+  background:none;border:none;display:flex;align-items:center;
+  transition:color 0.15s;
+}
+.search-clear:hover{color:var(--white)}
+.search-btn{
+  padding:14px 22px;border-radius:12px;font-size:13px;font-weight:600;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;white-space:nowrap;
+  transition:opacity 0.2s,transform 0.15s;
+  letter-spacing:0.3px;
+}
+.search-btn:hover{opacity:0.88;transform:translateY(-1px)}
+
+/* ── DROPDOWN ── */
+.dropdown{
+  position:absolute;top:calc(100% + 6px);left:0;right:80px;
+  background:var(--gray2);border:1px solid var(--border);
+  border-radius:12px;z-index:50;overflow:hidden;
+  animation:dropIn 0.15s ease;
+}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.drop-item{
+  padding:13px 18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border2);
+  transition:background 0.15s;
+}
+.drop-item:last-child{border-bottom:none}
+.drop-item:hover{background:rgba(255,92,0,0.08)}
+.drop-item-name{font-size:14px;font-weight:500}
+.drop-item-price{font-size:13px;color:var(--orange);font-weight:600}
+.drop-item-cat{font-size:10px;color:var(--muted);margin-left:8px}
+.drop-add{
+  background:none;border:1px solid var(--border);border-radius:6px;
+  color:var(--muted2);font-size:11px;padding:4px 12px;
+  transition:all 0.15s;
+}
+.drop-item:hover .drop-add{border-color:var(--orange);color:var(--orange)}
+
+/* ── STATUS BAR ── */
+.status-bar{
+  display:flex;align-items:center;justify-content:center;gap:20px;
+  margin-top:1.5rem;font-size:11px;color:var(--muted);
+  animation:heroIn 0.8s ease both 0.5s;
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+.status-dot.green{background:#22C55E;box-shadow:0 0 8px rgba(34,197,94,0.4)}
+.status-dot.orange{background:var(--orange)}
+
+/* ── MAIN ── */
+#main{max-width:1280px;margin:0 auto;padding:2.5rem 2.5rem 5rem}
+
+/* ── STATS ── */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  margin-bottom:2.5rem;
+  animation:heroIn 0.6s ease both 0.1s;
+}
+.stat-card{
+  background:var(--gray2);border:1px solid var(--border2);
+  border-radius:14px;padding:1.25rem 1.5rem;
+  position:relative;overflow:hidden;
+  transition:border-color 0.2s,transform 0.2s;
+}
+.stat-card:hover{border-color:var(--border);transform:translateY(-1px)}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,92,0,0.03),transparent);
+}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--orange);letter-spacing:2px}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
+.stat-icon{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:28px;opacity:0.15}
+
+/* ── ADD PRODUCT PANEL ── */
+#add-panel{
+  background:var(--gray2);
+  border:1px solid rgba(255,92,0,0.2);
+  border-radius:16px;padding:2rem;
+  margin-bottom:2.5rem;
+  animation:heroIn 0.5s ease both;
+}
+.panel-title{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;
+  letter-spacing:3px;color:var(--orange);margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:12px;
+}
+.panel-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(to right,rgba(255,92,0,0.3),transparent);
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.form-field label{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:8px}
+.form-input{
+  width:100%;background:var(--gray3);border:1px solid var(--border2);
+  color:var(--white);border-radius:10px;padding:12px 16px;font-size:14px;
+  transition:border-color 0.2s;
+}
+.form-input:focus{border-color:rgba(255,92,0,0.5)}
+.form-input::placeholder{color:var(--muted)}
+.cat-detect{font-size:11px;color:var(--muted2);margin-top:6px;min-height:16px}
+.cat-detect span{color:var(--orange);font-weight:500}
+.cat-select-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.cat-select-btn{
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;
+  border:1px solid var(--border2);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all 0.2s;
+}
+.cat-select-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2)}
+.cat-select-btn.selected{color:var(--orange);background:rgba(255,92,0,0.12);border-color:rgba(255,92,0,0.4)}
+.submit-btn{
+  padding:12px 28px;border-radius:10px;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;font-size:14px;font-weight:600;
+  white-space:nowrap;height:46px;display:flex;align-items:center;gap:8px;
+  transition:opacity 0.2s,transform 0.15s;
+  align-self:end;
+}
+.submit-btn:hover{opacity:0.88;transform:translateY(-1px)}
+
+/* ── FILTERS ── */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;
+}
+.section-title{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  letter-spacing:3px;color:var(--muted2);
+}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  padding:7px 18px;border-radius:20px;font-size:12px;font-weight:500;
+  border:1px solid var(--border2);background:transparent;color:var(--muted);
+  transition:all 0.2s;letter-spacing:0.3px;cursor:pointer;
+}
+.filter-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.15)}
+.filter-btn.active{
+  color:var(--orange);background:rgba(255,92,0,0.1);
+  border-color:rgba(255,92,0,0.35);
+}
+
+/* ── PRODUCT GRID ── */
+.product-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:16px;
+}
+.prod-card{
+  background:var(--gray2);border:1px solid var(--border2);
+  border-radius:16px;padding:1.4rem;
+  position:relative;overflow:hidden;
+  transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+  cursor:default;
+  animation:cardIn 0.4s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.prod-card:hover{
+  border-color:rgba(255,92,0,0.35);
+  background:rgba(255,92,0,0.04);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.3);
+}
+.prod-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--orange),var(--red));
+  opacity:0;transition:opacity 0.25s;
+}
+.prod-card:hover::before{opacity:1}
+
+.cat-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;border-radius:20px;font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;
+}
+.prod-name{font-size:16px;font-weight:600;line-height:1.3;margin-bottom:14px}
+.prod-price-main{
+  font-family:'Bebas Neue',sans-serif;font-size:42px;
+  color:var(--orange);line-height:1;letter-spacing:1px;
+}
+.prod-price-unit{font-size:14px;color:var(--muted2);font-family:'DM Sans',sans-serif;font-weight:400}
+.prod-price-label{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:0.5px}
+.price-tags{display:flex;gap:8px;margin-top:10px}
+.price-tag{
+  padding:3px 10px;border-radius:6px;font-size:11px;font-weight:500;
+  background:var(--gray3);color:var(--muted2);border:1px solid var(--border2);
+}
+.contrib-count{
+  font-size:11px;color:var(--muted);margin-top:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.contrib-dot{width:4px;height:4px;border-radius:50%;background:var(--muted)}
+.card-actions{display:flex;gap:8px;margin-top:16px}
+.add-cart-btn{
+  flex:1;padding:10px;border-radius:10px;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;font-size:13px;font-weight:600;
+  transition:opacity 0.2s,transform 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.add-cart-btn:hover{opacity:0.88;transform:translateY(-1px)}
+.contrib-price-btn{
+  padding:10px 14px;border-radius:10px;
+  background:var(--gray3);border:1px solid var(--border2);
+  color:var(--muted2);font-size:14px;
+  transition:all 0.2s;
+}
+.contrib-price-btn:hover{border-color:var(--orange);color:var(--orange)}
+
+/* ── EMPTY STATE ── */
+.empty{padding:5rem 1rem;text-align:center}
+.empty-icon{font-size:52px;margin-bottom:1.5rem}
+.empty-title{font-size:22px;font-weight:600;margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;line-height:1.6}
+.empty-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:10px;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;font-size:14px;font-weight:600;
+  transition:opacity 0.2s;
+}
+.empty-btn:hover{opacity:0.88}
+
+/* ── CART SIDEBAR ── */
+#cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
+  z-index:140;opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+#cart-overlay.open{opacity:1;pointer-events:all}
+#cart{
+  position:fixed;right:0;top:0;bottom:0;width:400px;
+  background:#0C0C0C;border-left:1px solid var(--border2);
+  z-index:150;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+#cart.open{transform:translateX(0)}
+
+.cart-header{
+  padding:1.5rem;border-bottom:1px solid var(--border2);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cart-title{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;
+  letter-spacing:3px;color:var(--orange);
+}
+.cart-close{
+  background:var(--gray2);border:1px solid var(--border2);
+  color:var(--muted2);padding:8px 13px;border-radius:8px;font-size:18px;
+  transition:all 0.15s;
+}
+.cart-close:hover{background:var(--gray3);color:var(--white)}
+.cart-body{flex:1;overflow-y:auto;padding:1rem}
+.cart-item{
+  display:flex;gap:12px;align-items:center;
+  padding:12px;background:var(--gray2);border:1px solid var(--border2);
+  border-radius:12px;margin-bottom:8px;
+  animation:cardIn 0.25s ease;
+}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cart-item-price{font-size:13px;color:var(--orange);font-weight:600;margin-top:2px}
+.qty-controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.qty-btn{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--gray3);border:1px solid var(--border2);
+  color:var(--white);font-size:15px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.qty-btn:hover{background:var(--orange);border-color:var(--orange)}
+.qty-num{font-size:15px;font-weight:600;min-width:20px;text-align:center}
+
+.min-warn{
+  background:rgba(217,48,37,0.1);border:1px solid rgba(217,48,37,0.25);
+  border-radius:10px;padding:10px 14px;font-size:12px;color:#f87171;
+  margin-top:8px;display:flex;align-items:center;gap:8px;
+}
+.cart-empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.cart-empty-icon{font-size:36px;margin-bottom:1rem}
+
+.cart-footer{padding:1.25rem 1.5rem;border-top:1px solid var(--border2)}
+.total-line{
+  display:flex;justify-content:space-between;
+  font-size:13px;color:var(--muted2);margin-bottom:8px;
+}
+.total-line.main{
+  font-size:18px;font-weight:700;color:var(--white);
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--border2);
+  margin-bottom:0;
+}
+.total-line.main span:last-child{color:var(--orange)}
+.wa-btn{
+  margin-top:1rem;width:100%;padding:15px;border-radius:12px;
+  background:#25D366;color:#fff;font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:opacity 0.2s,transform 0.15s;
+  letter-spacing:0.3px;
+}
+.wa-btn:hover:not(:disabled){opacity:0.9;transform:translateY(-1px)}
+.wa-btn:disabled{opacity:0.45;cursor:not-allowed}
+
+/* ── MODALS ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);
+  z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;
+  animation:fadeIn 0.2s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  background:#0F0F0F;border:1px solid var(--border);border-radius:20px;
+  padding:2rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;
+  animation:modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;
+  letter-spacing:3px;color:var(--orange);margin-bottom:1.5rem;
+}
+.modal-label{
+  font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);display:block;margin-bottom:8px;
+}
+.modal-input{
+  width:100%;background:var(--gray2);border:1px solid var(--border2);
+  color:var(--white);border-radius:10px;padding:12px 16px;
+  font-size:14px;margin-bottom:14px;transition:border-color 0.2s;
+}
+.modal-input:focus{border-color:rgba(255,92,0,0.5)}
+.modal-input::placeholder{color:var(--muted)}
+.modal-product-info{
+  background:var(--gray2);border:1px solid var(--border2);border-radius:12px;
+  padding:1rem 1.25rem;margin-bottom:1.5rem;
+}
+.modal-prod-name{font-size:15px;font-weight:600;margin-bottom:8px}
+.modal-prod-price{
+  font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--orange);
+  letter-spacing:1px;line-height:1;
+}
+.modal-prod-price small{font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400}
+.modal-price-meta{font-size:12px;color:var(--muted);margin-top:6px}
+.modal-history{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.history-pill{
+  padding:3px 10px;border-radius:6px;background:var(--gray3);
+  font-size:11px;color:var(--muted2);border:1px solid var(--border2);
+}
+.btn-primary{
+  width:100%;padding:14px;border-radius:12px;
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;font-size:15px;font-weight:700;letter-spacing:0.5px;
+  margin-top:8px;transition:opacity 0.2s,transform 0.15s;
+}
+.btn-primary:hover{opacity:0.88;transform:translateY(-1px)}
+.btn-secondary{
+  width:100%;padding:12px;border-radius:12px;
+  background:var(--gray2);border:1px solid var(--border2);
+  color:var(--muted2);font-size:14px;margin-top:8px;
+  transition:all 0.15s;
+}
+.btn-secondary:hover{color:var(--white);border-color:var(--muted)}
+.order-items{background:var(--gray2);border:1px solid var(--border2);border-radius:12px;padding:1rem;margin-bottom:1.25rem}
+.order-item-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.order-item-row:last-child{margin-bottom:0}
+.order-divider{height:1px;background:var(--border2);margin:10px 0}
+.order-total-row{display:flex;justify-content:space-between;font-size:14px;font-weight:700;color:var(--white)}
+.order-total-row span:last-child{color:var(--orange)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,var(--orange),var(--red));
+  color:#fff;padding:12px 26px;border-radius:12px;font-size:13px;font-weight:600;
+  z-index:300;box-shadow:0 8px 32px rgba(255,92,0,0.35);
+  opacity:0;pointer-events:none;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  white-space:nowrap;letter-spacing:0.3px;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border2);
+  padding:2rem 2.5rem;text-align:center;
+  font-size:11px;color:var(--muted);letter-spacing:1px;
+  margin-top:auto;
+}
+footer span{color:var(--orange)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  #nav{padding:0 1rem}
+  .logo{font-size:28px;letter-spacing:4px}
+  #hero{padding:88px 1rem 40px}
+  #main{padding:1.5rem 1rem 4rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  .product-grid{grid-template-columns:1fr}
+  #cart{width:100%;right:0}
+  .nav-links{gap:2px}
+  .nav-tab{padding:6px 12px;font-size:12px}
+  .cart-btn{padding:8px 14px;font-size:12px}
+}
+.lang-switcher{position:relative;display:flex;align-items:center}
+.lang-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:8px;
+  background:var(--gray2);border:1px solid var(--border2);
+  color:var(--muted2);font-size:13px;font-weight:500;
+  transition:all 0.2s;cursor:pointer;
+}
+.lang-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.15)}
+.lang-flag{font-size:16px;line-height:1}
+.lang-dropdown{
+  position:absolute;top:calc(100% + 8px);left:0;
+  background:var(--gray2);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;z-index:200;
+  min-width:160px;
+  animation:dropIn 0.15s ease;
+  display:none;
+}
+.lang-dropdown.open{display:block}
+.lang-option{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;cursor:pointer;font-size:14px;
+  border-bottom:1px solid var(--border2);transition:background 0.15s;
+  color:var(--muted2);
+}
+.lang-option:last-child{border-bottom:none}
+.lang-option:hover{background:rgba(255,92,0,0.08);color:var(--white)}
+.lang-option.active{color:var(--orange);background:rgba(255,92,0,0.06)}
+.lang-option-name{font-weight:500}
+.lang-option-native{font-size:12px;color:var(--muted);margin-left:auto}
+[dir="rtl"] .lang-option-native{margin-left:0;margin-right:auto}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()">
+        <span class="lang-flag" id="langFlag">🇫🇷</span>
+        <span id="langCode">FR</span>
+        <span style="font-size:10px;opacity:0.5">▾</span>
+      </button>
+      <div class="lang-dropdown" id="langDropdown">
+        <div class="lang-option active" data-lang="fr" onclick="setLang('fr')">
+          <span class="lang-flag">🇫🇷</span>
+          <span class="lang-option-name">Français</span>
+          <span class="lang-option-native">FR</span>
+        </div>
+        <div class="lang-option" data-lang="en" onclick="setLang('en')">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-option-name">English</span>
+          <span class="lang-option-native">EN</span>
+        </div>
+        <div class="lang-option" data-lang="ar" onclick="setLang('ar')">
+          <span class="lang-flag">🇲🇦</span>
+          <span class="lang-option-name">العربية</span>
+          <span class="lang-option-native">AR</span>
+        </div>
+      </div>
+    </div>
+    <div class="logo" onclick="setTab('catalog')">L.E</div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-tab active" id="tab-catalog" onclick="setTab('catalog')" data-i18n="nav_catalog">Catalogue</button>
+    <button class="nav-tab" id="tab-add" onclick="setTab('add')" data-i18n="nav_add">+ Ajouter</button>
+  </div>
+  <button class="cart-btn" onclick="toggleCart()">
+    🛒 <span data-i18n="nav_cart">Panier</span>
+    <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <h1 class="hero-title">
+    <span class="line1">L.E</span>
+  </h1>
+  <p class="hero-sub">Marketplace collaborative · Prix en temps réel · Livraison rapide</p>
+  <div class="hero-divider"></div>
+  <div class="search-wrap">
+    <div class="search-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" id="searchInput" placeholder="Rechercher un produit..." autocomplete="off" oninput="handleSearch()" onkeydown="searchKeydown(event)"/>
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none">✕</button>
+      </div>
+      <button class="search-btn" onclick="closeDropdown()">Rechercher</button>
+    </div>
+    <div class="dropdown" id="searchDropdown" style="display:none"></div>
+  </div>
+  <div class="status-bar">
+    <span class="status-dot" id="fbDot"></span>
+    <span id="fbStatus">Connexion Firebase...</span>
+    <span style="color:var(--border2)">·</span>
+    <span id="prodCount">0 produits</span>
+    <span style="color:var(--border2)">·</span>
+    <span id="contribCount">0 contributions</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- STATS -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card">
+      <div class="stat-num" id="sProd">—</div>
+      <div class="stat-label">Produits</div>
+      <div class="stat-icon">📦</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Catégories</div>
+      <div class="stat-icon">🏷️</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="sContrib">—</div>
+      <div class="stat-label">Contributions</div>
+      <div class="stat-icon">✍️</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="sCart">0</div>
+      <div class="stat-label">Dans panier</div>
+      <div class="stat-icon">🛒</div>
+    </div>
+  </div>
+
+  <!-- ADD PANEL -->
+  <div id="add-panel" style="display:none">
+    <div class="panel-title">AJOUTER / CONTRIBUER UN PRIX</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Nom du produit</label>
+        <input class="form-input" id="newName" type="text" placeholder="Ex: Café Nescafé" oninput="detectCategory()"/>
+      </div>
+      <div class="form-field">
+        <label>Prix observé (DH)</label>
+        <input class="form-input" id="newPrice" type="number" step="0.5" min="0" placeholder="Ex: 8.50"/>
+      </div>
+      <button class="submit-btn" onclick="addProduct()">
+        <span>+</span> Valider
+      </button>
+    </div>
+    <div style="margin-top:14px">
+      <label style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:10px">Catégorie <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(auto-détectée · modifiable)</span></label>
+      <div class="cat-select-row">
+        <button class="cat-select-btn" data-cat="boissons" onclick="selectCat('boissons',this)">☕ Boissons</button>
+        <button class="cat-select-btn" data-cat="snacks" onclick="selectCat('snacks',this)">🍿 Snacks</button>
+        <button class="cat-select-btn" data-cat="laitier" onclick="selectCat('laitier',this)">🧀 Produits Laitiers</button>
+        <button class="cat-select-btn" data-cat="boulangerie" onclick="selectCat('boulangerie',this)">🥖 Boulangerie</button>
+        <button class="cat-select-btn" data-cat="autres" onclick="selectCat('autres',this)">📦 Autres</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION HEADER -->
+  <div class="section-header">
+    <div class="section-title" id="sectionTitle">TOUS LES PRODUITS</div>
+    <div class="filters" id="filtersBar">
+      <button class="filter-btn active" data-cat="all" onclick="setFilter('all',this)">🔥 Tout</button>
+      <button class="filter-btn" data-cat="boissons" onclick="setFilter('boissons',this)">☕ Boissons</button>
+      <button class="filter-btn" data-cat="snacks" onclick="setFilter('snacks',this)">🍿 Snacks</button>
+      <button class="filter-btn" data-cat="laitier" onclick="setFilter('laitier',this)">🧀 Laitiers</button>
+      <button class="filter-btn" data-cat="boulangerie" onclick="setFilter('boulangerie',this)">🥖 Boulangerie</button>
+      <button class="filter-btn" data-cat="autres" onclick="setFilter('autres',this)">📦 Autres</button>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="product-grid" id="productGrid"></div>
+  <div id="emptyState" style="display:none" class="empty">
+    <div class="empty-icon">🔍</div>
+    <div class="empty-title">Produit introuvable</div>
+    <p class="empty-sub">Ce produit n'existe pas encore dans notre base.<br/>Soyez le premier à l'ajouter !</p>
+    <button class="empty-btn" onclick="setTab('add');document.getElementById('newName').value=document.getElementById('searchInput').value;detectCategory()">
+      + Ajouter ce produit
+    </button>
+  </div>
+</main>
+
+<!-- CART OVERLAY -->
+<div id="cart-overlay" onclick="toggleCart()"></div>
+
+<!-- CART SIDEBAR -->
+<div id="cart">
+  <div class="cart-header">
+    <div class="cart-title">MON PANIER</div>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <p id='cartEmptyTxt'>Votre panier est vide</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="total-line"><span id="lSubtotal">Sous-total</span><span id="tSubtotal">0 DH</span></div>
+    <div class="total-line"><span id="lDelivery">Livraison</span><span>10 DH</span></div>
+    <div class="total-line"><span id="lCommission">Commission (10%)</span><span id="tCommission">0 DH</span></div>
+    <div class="total-line main"><span>TOTAL</span><span id="tTotal">0 DH</span></div>
+    <button class="wa-btn" id="waBtn" onclick="openOrderModal()">
+      📲 Commander via WhatsApp
+    </button>
+  </div>
+</div>
+
+<!-- PRICE MODAL -->
+<div class="modal-overlay" id="priceModal" style="display:none" onclick="if(event.target===this)closePriceModal()">
+  <div class="modal-box">
+    <div class="modal-title">CONTRIBUER UN PRIX</div>
+    <div class="modal-product-info" id="priceModalInfo"></div>
+    <label class="modal-label">Votre prix observé (DH)</label>
+    <input class="modal-input" id="priceContrib" type="number" step="0.5" min="0" placeholder="Ex: 9.50" onkeydown="if(event.key==='Enter')submitPriceContrib()"/>
+    <button class="btn-primary" onclick="submitPriceContrib()">✓ Contribuer ce prix</button>
+    <button class="btn-secondary" onclick="closePriceModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- RENAME MODAL -->
+<div class="modal-overlay" id="renameModal" style="display:none" onclick="if(event.target===this)closeRenameModal()">
+  <div class="modal-box">
+    <div class="modal-title">✏️ RENOMMER LE PRODUIT</div>
+    <div class="modal-product-info" id="renameModalInfo"></div>
+    <label class="modal-label">Nouveau nom</label>
+    <input class="modal-input" id="renameInput" type="text" placeholder="Entrez le nouveau nom..." onkeydown="if(event.key==='Enter')submitRename()"/>
+    <button class="btn-primary" onclick="submitRename()">✓ Renommer</button>
+    <button class="btn-secondary" onclick="closeRenameModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal" style="display:none" onclick="if(event.target===this)closeOrderModal()">
+  <div class="modal-box">
+    <div class="modal-title">FINALISER LA COMMANDE</div>
+    <label class="modal-label">Nom & Prénom</label>
+    <input class="modal-input" id="orderName" type="text" placeholder="Hassan El Idrissi"/>
+    <label class="modal-label">Adresse de livraison</label>
+    <input class="modal-input" id="orderAddress" type="text" placeholder="Bureau 3, 2ème étage, Casablanca"/>
+    <div class="order-items" id="orderSummary"></div>
+    <button class="btn-primary" style="background:linear-gradient(135deg,#25D366,#128C7E);margin-top:0;display:flex;align-items:center;justify-content:center;gap:8px" onclick="sendWhatsApp()">
+      📲 Envoyer la commande WhatsApp
+    </button>
+    <button class="btn-secondary" onclick="closeOrderModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<footer>
+  <span>L.E</span> · Marketplace collaborative Maroc
+  · Tous droits réservés 2025
+</footer>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBGuUnbWXUSD3qSFvlmxjPCOwTeEGv97PM",
+  authDomain: "leprojet-d6d25.firebaseapp.com",
+  projectId: "leprojet-d6d25",
+  storageBucket: "leprojet-d6d25.firebasestorage.app",
+  messagingSenderId: "377627635140",
+  appId: "1:377627635140:web:e0af3422fc1e35546dc891",
+  measurementId: "G-E4H310XBGY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.__db = db;
+window.__fbModules = { collection, doc, onSnapshot, setDoc, addDoc, serverTimestamp, getDocs };
+
+// Seed data if empty
+const SEED = [
+  {id:'cafe-nescafe',name:'Café Nescafé',category:'boissons',prices:[8,9,8.5],count:3},
+  {id:'pain-de-mie',name:'Pain de Mie',category:'boulangerie',prices:[12,13,12],count:3},
+  {id:'yaourt-danone',name:'Yaourt Danone',category:'laitier',prices:[6,6.5,7],count:3},
+  {id:'chips-lays',name:"Chips Lay's",category:'snacks',prices:[5,5,5.5],count:3},
+  {id:'jus-orange',name:"Jus d'Orange",category:'boissons',prices:[10,11,10],count:3},
+  {id:'croissant',name:'Croissant',category:'boulangerie',prices:[4,5,4.5],count:3},
+  {id:'fromage-vache',name:'Fromage La Vache',category:'laitier',prices:[15,16,15],count:3},
+  {id:'kinder-bueno',name:'Kinder Bueno',category:'snacks',prices:[8,8,9],count:3},
+  {id:'eau-sidi-ali',name:'Eau Sidi Ali',category:'boissons',prices:[3,3.5,3],count:3},
+  {id:'sandwich-thon',name:'Sandwich Thon',category:'boulangerie',prices:[18,20,19],count:3},
+  {id:'cafe-noir',name:'Café Noir',category:'boissons',prices:[5,6,5.5],count:3},
+  {id:'msemen',name:'Msemen',category:'boulangerie',prices:[2,2.5,2],count:3},
+  {id:'activia',name:'Activia Nature',category:'laitier',prices:[7,7.5,8],count:3},
+  {id:'snickers',name:'Snickers',category:'snacks',prices:[9,10,9.5],count:3},
+  {id:'coca-cola',name:'Coca Cola',category:'boissons',prices:[7,8,7.5],count:3},
+];
+
+async function seedIfEmpty() {
+  try {
+    const snap = await getDocs(collection(db, 'products'));
+    if (snap.empty) {
+      console.log('Seeding Firebase...');
+      for (const p of SEED) {
+        const avg = p.prices.reduce((a,b)=>a+b,0)/p.prices.length;
+        const min = Math.min(...p.prices);
+        const max = Math.max(...p.prices);
+        await setDoc(doc(db,'products',p.id), {...p, avg, min, max, createdAt: serverTimestamp()});
+      }
+      console.log('Seeded ✓');
+    }
+  } catch(e) { console.error('Seed error:',e); }
+}
+
+// Realtime listener
+onSnapshot(collection(db, 'products'), (snap) => {
+  const prods = [];
+  snap.forEach(d => prods.push({id:d.id,...d.data()}));
+  window.__products = prods;
+  window.renderAll();
+  // Update status
+  document.getElementById('fbDot').className = 'status-dot green';
+  document.getElementById('fbStatus').textContent = 'Firebase connecté';
+  document.getElementById('prodCount').textContent = prods.length + ' produits';
+  const totalContrib = prods.reduce((s,p)=>s+(p.count||0),0);
+  document.getElementById('contribCount').textContent = totalContrib + ' contributions';
+}, (err) => {
+  document.getElementById('fbDot').className = 'status-dot';
+  document.getElementById('fbDot').style.background='#ef4444';
+  document.getElementById('fbStatus').textContent = 'Mode local (Firebase indisponible)';
+  // Load seed locally
+  window.__products = SEED.map(p=>({
+    ...p,
+    avg:p.prices.reduce((a,b)=>a+b,0)/p.prices.length,
+    min:Math.min(...p.prices),
+    max:Math.max(...p.prices)
+  }));
+  window.renderAll();
+});
+
+seedIfEmpty();
+
+// Expose Firebase to global scope
+window.__setDoc = setDoc;
+window.__doc = (id) => doc(db, 'products', id);
+window.__addOrder = (data) => addDoc(collection(db, 'orders'), {...data, createdAt: serverTimestamp()});
+window.__addDoc = (col, data) => addDoc(collection(db, col), {...data, createdAt: serverTimestamp()});
+</script>
+
+<script>
+// ── STATE ──
+window.__products = [];
+let cart = [];
+let activeFilter = 'all';
+let searchQuery = '';
+let priceModalProduct = null;
+let currentTab = 'catalog';
+let toastTimer = null;
+
+// ── CATEGORIES ──
+const CAT_KEYWORDS = {
+  boissons:['café','cafe','thé','the','jus','eau','soda','lait','boisson','coca','pepsi','fanta','sprite','citron','menthe','lipton','capri','activia drink','nestle'],
+  snacks:['chips','biscuit','cookie','chocolat','bonbon','gâteau','gateau','snack','crackers','nuts','cacahuète','amande','kinder','snickers','twix','bounty','m&m','kit kat','oreo','prince'],
+  laitier:['fromage','yaourt','yogurt','beurre','crème','creme','feta','gouda','camembert','labneh','activia','danone','vache','lait'],
+  boulangerie:['pain','sandwich','croissant','baguette','msemen','harcha','batbout','brioche','toast','pita','burger','wrap','panini','mille','millefeuille','tarte'],
+};
+const CAT_LABELS = {boissons:'☕ Boissons',snacks:'🍿 Snacks',laitier:'🧀 Produits Laitiers',boulangerie:'🥖 Boulangerie',autres:'📦 Autres'};
+const CAT_COLORS = {boissons:{bg:'rgba(249,115,22,0.12)',color:'#fb923c'},snacks:{bg:'rgba(239,68,68,0.12)',color:'#f87171'},laitier:{bg:'rgba(234,179,8,0.12)',color:'#facc15'},boulangerie:{bg:'rgba(34,197,94,0.12)',color:'#4ade80'},autres:{bg:'rgba(148,163,184,0.1)',color:'#94a3b8'}};
+
+function getCategory(name) {
+  const n = name.toLowerCase();
+  for(const [cat,words] of Object.entries(CAT_KEYWORDS)) {
+    if(words.some(w=>n.includes(w))) return cat;
+  }
+  return 'autres';
+}
+
+function normalize(s) {
+  return s.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+
+// ── RENDER ──
+window.renderAll = function() {
+  const prods = window.__products || [];
+  
+  // Stats
+  const total = prods.reduce((s,p)=>s+(p.count||0),0);
+  el('sProd').textContent = prods.length;
+  el('sContrib').textContent = total;
+  el('sCart').textContent = cart.reduce((s,i)=>s+i.qty,0);
+
+  // Filter & search
+  let filtered = prods.filter(p => {
+    const matchCat = activeFilter === 'all' || p.category === activeFilter;
+    const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchCat && matchSearch;
+  });
+
+  // Sort by name
+  filtered.sort((a,b)=>a.name.localeCompare(b.name));
+
+  const grid = el('productGrid');
+  const empty = el('emptyState');
+
+  if(filtered.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = filtered.map(p => renderCard(p)).join('');
+  }
+  
+  renderCart();
+};
+
+function renderCard(p) {
+  const c = CAT_COLORS[p.category] || CAT_COLORS.autres;
+  const label = CAT_LABELS[p.category] || CAT_LABELS.autres;
+  const inCart = cart.find(i=>i.id===p.id);
+  const avg = parseFloat(p.avg || 0).toFixed(2);
+  const min = parseFloat(p.min || 0).toFixed(2);
+  const max = parseFloat(p.max || 0).toFixed(2);
+  return `
+  <div class="prod-card">
+    <div class="cat-tag" style="background:${c.bg};color:${c.color}">${label}</div>
+    <div class="prod-name">${escHtml(p.name)}</div>
+    <div class="prod-price-main">${avg}<span class="prod-price-unit"> DH</span></div>
+    <div class="prod-price-label">${t('card_avg')} · ${p.count||0} ${(p.count||0)>1?t('card_contribs'):t('card_contrib')}</div>
+    <div class="price-tags">
+      <span class="price-tag">${t('card_min')}: ${min} DH</span>
+      <span class="price-tag">${t('card_max')}: ${max} DH</span>
+    </div>
+    <div class="card-actions">
+      <button class="add-cart-btn" onclick="addToCart('${p.id}')">
+        ${inCart?t('card_added'):t('card_add')}
+      </button>
+      <button class="contrib-price-btn" title="Contribuer un prix" onclick="openPriceModal('${p.id}')">💰</button>
+      <button class="contrib-price-btn" title="Renommer le produit" onclick="openRenameModal('${p.id}')">✏️</button>
+    </div>
+  </div>`;
+}
+
+// ── CART ──
+function addToCart(id) {
+  const p = window.__products.find(x=>x.id===id);
+  if(!p) return;
+  const ex = cart.find(i=>i.id===id);
+  if(ex) {
+    ex.qty++;
+  } else {
+    cart.push({...p, qty:1});
+  }
+  renderAll();
+  showToast(`${p.name} ${t('toast_added')}`);
+  updateCartBadge();
+}
+
+function updateQty(id, delta) {
+  const idx = cart.findIndex(i=>i.id===id);
+  if(idx<0) return;
+  cart[idx].qty += delta;
+  if(cart[idx].qty <= 0) cart.splice(idx,1);
+  renderAll();
+  updateCartBadge();
+}
+
+function updateCartBadge() {
+  const total = cart.reduce((s,i)=>s+i.qty,0);
+  const badge = el('cart-badge');
+  if(total > 0) { badge.style.display='flex'; badge.textContent=total; }
+  else badge.style.display='none';
+}
+
+function renderCart() {
+  const body = el('cartBody');
+  const footer = el('cartFooter');
+  const totalItems = cart.reduce((s,i)=>s+i.qty,0);
+  
+  if(cart.length === 0) {
+    body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🛒</div><p>${t('cart_empty')}</p></div>`;
+    footer.style.display='none'; return;
+  }
+  
+  const subtotal = cart.reduce((s,i)=>s+(parseFloat(i.avg)||0)*i.qty,0);
+  const commission = subtotal*0.1;
+  const total = subtotal+10+commission;
+  
+  let html = cart.map(item => {
+    const price = ((parseFloat(item.avg)||0)*item.qty).toFixed(2);
+    return `<div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${escHtml(item.name)}</div>
+        <div class="cart-item-price">${price} DH</div>
+      </div>
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="updateQty('${item.id}',-1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="updateQty('${item.id}',+1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  
+
+  
+  body.innerHTML = html;
+  footer.style.display='block';
+  el('tSubtotal').textContent = subtotal.toFixed(2)+' DH';
+  el('tCommission').textContent = commission.toFixed(2)+' DH';
+  el('tTotal').textContent = total.toFixed(2)+' DH';
+  
+  const waBtn = el('waBtn');
+  waBtn.disabled = false;
+  waBtn.title = '';
+}
+
+// ── SEARCH ──
+function handleSearch() {
+  const val = el('searchInput').value;
+  searchQuery = val;
+  el('searchClear').style.display = val?'flex':'none';
+  renderAll();
+  
+  if(val.length > 1) {
+    const matches = (window.__products||[]).filter(p=>p.name.toLowerCase().includes(val.toLowerCase())).slice(0,6);
+    renderDropdown(matches, val);
+  } else {
+    closeDropdown();
+  }
+}
+
+function renderDropdown(items, query) {
+  const dd = el('searchDropdown');
+  if(items.length === 0) { dd.style.display='none'; return; }
+  dd.innerHTML = items.map(p => `
+    <div class="drop-item" onclick="selectProduct('${p.id}')">
+      <div>
+        <span class="drop-item-name">${highlight(p.name,query)}</span>
+        <span class="drop-item-cat">${CAT_LABELS[p.category]||''}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="drop-item-price">${parseFloat(p.avg).toFixed(2)} DH</span>
+        <button class="drop-add" onclick="event.stopPropagation();addToCart('${p.id}')">+ Panier</button>
+      </div>
+    </div>`).join('');
+  dd.style.display='block';
+}
+
+function highlight(text, query) {
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+  return escHtml(text).replace(re,'<span style="color:var(--orange);font-weight:600">$1</span>');
+}
+
+function selectProduct(id) {
+  const p = window.__products.find(x=>x.id===id);
+  if(!p) return;
+  el('searchInput').value = p.name;
+  searchQuery = p.name;
+  closeDropdown();
+  renderAll();
+}
+
+function clearSearch() {
+  el('searchInput').value='';
+  searchQuery='';
+  el('searchClear').style.display='none';
+  closeDropdown();
+  renderAll();
+}
+
+function closeDropdown() {
+  el('searchDropdown').style.display='none';
+}
+
+function searchKeydown(e) {
+  if(e.key==='Escape') closeDropdown();
+}
+
+document.addEventListener('click', e => {
+  if(!el('searchDropdown').contains(e.target) && e.target!==el('searchInput')) closeDropdown();
+});
+
+// ── TABS ──
+function setTab(tab) {
+  currentTab = tab;
+  el('tab-catalog').classList.toggle('active', tab==='catalog');
+  el('tab-add').classList.toggle('active', tab==='add');
+  el('add-panel').style.display = tab==='add' ? 'block' : 'none';
+}
+window.setTab = setTab;
+
+// ── FILTERS ──
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+window.setFilter = setFilter;
+
+// ── ADD PRODUCT ──
+let selectedCat = null;
+
+function selectCat(cat, btn) {
+  selectedCat = cat;
+  document.querySelectorAll('.cat-select-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+window.selectCat = selectCat;
+
+function detectCategory() {
+  const name = el('newName').value;
+  if(!name) { selectedCat = null; document.querySelectorAll('.cat-select-btn').forEach(b=>b.classList.remove('selected')); return; }
+  const cat = getCategory(name);
+  selectedCat = cat;
+  document.querySelectorAll('.cat-select-btn').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.cat === cat);
+  });
+}
+window.detectCategory = detectCategory;
+
+async function addProduct() {
+  const name = el('newName').value.trim();
+  const price = parseFloat(el('newPrice').value);
+  if(!name || isNaN(price) || price <= 0) {
+    showToast(t('toast_fill')); return;
+  }
+  const id = normalize(name);
+  const existing = (window.__products||[]).find(p=>normalize(p.name)===id || p.id===id);
+  const cat = selectedCat || getCategory(name);
+
+  if(existing) {
+    const updated = {...existing};
+    updated.prices = [...(updated.prices||[]), price];
+    updated.avg = updated.prices.reduce((a,b)=>a+b,0)/updated.prices.length;
+    updated.min = Math.min(...updated.prices);
+    updated.max = Math.max(...updated.prices);
+    updated.count = updated.prices.length;
+    try {
+      if(window.__db) await window.__setDoc(window.__doc(updated.id), updated);
+    } catch(e) {
+      window.__products = window.__products.map(p=>p.id===updated.id?updated:p);
+      window.renderAll();
+    }
+    showToast(t('toast_price_updated'));
+  } else {
+    const newProd = {id,name,category:cat,prices:[price],avg:price,min:price,max:price,count:1};
+    try {
+      if(window.__db) await window.__setDoc(window.__doc(id), newProd);
+    } catch(e) {
+      window.__products.push(newProd);
+      window.renderAll();
+    }
+    showToast(t('toast_product_added'));
+  }
+  el('newName').value=''; el('newPrice').value='';
+  selectedCat = null;
+  document.querySelectorAll('.cat-select-btn').forEach(b=>b.classList.remove('selected'));
+}
+window.addProduct = addProduct;
+
+// ── PRICE MODAL ──
+function openPriceModal(id) {
+  const p = window.__products.find(x=>x.id===id);
+  if(!p) return;
+  priceModalProduct = p;
+  const c = CAT_COLORS[p.category]||CAT_COLORS.autres;
+  el('priceModalInfo').innerHTML = `
+    <div class="modal-prod-name">${escHtml(p.name)}</div>
+    <div class="modal-prod-price">${parseFloat(p.avg).toFixed(2)} <small>DH moy.</small></div>
+    <div class="modal-price-meta">Min: ${parseFloat(p.min).toFixed(2)} DH · Max: ${parseFloat(p.max).toFixed(2)} DH · ${p.count||0} ${(p.count||0)>1?t('price_contribs'):t('price_contrib')}</div>
+    <div class="modal-history">${(p.prices||[]).map(pr=>`<span class="history-pill">${parseFloat(pr).toFixed(2)} DH</span>`).join('')}</div>`;
+  el('priceContrib').value='';
+  el('priceModal').style.display='flex';
+  setTimeout(()=>el('priceContrib').focus(),100);
+}
+window.openPriceModal = openPriceModal;
+
+function closePriceModal() { el('priceModal').style.display='none'; priceModalProduct=null; }
+window.closePriceModal = closePriceModal;
+
+async function submitPriceContrib() {
+  const price = parseFloat(el('priceContrib').value);
+  if(!priceModalProduct || isNaN(price) || price<=0) { showToast(t('toast_invalid_price')); return; }
+  const updated = {...priceModalProduct};
+  updated.prices = [...(updated.prices||[]), price];
+  updated.avg = updated.prices.reduce((a,b)=>a+b,0)/updated.prices.length;
+  updated.min = Math.min(...updated.prices);
+  updated.max = Math.max(...updated.prices);
+  updated.count = updated.prices.length;
+  try {
+    if(window.__db) await window.__setDoc(window.__doc(updated.id), updated);
+  } catch(e) {
+    window.__products = window.__products.map(p=>p.id===updated.id?updated:p);
+    window.renderAll();
+  }
+  showToast(t('toast_price_contrib'));
+  closePriceModal();
+}
+window.submitPriceContrib = submitPriceContrib;
+
+// ── RENAME MODAL ──
+let renameModalProduct = null;
+
+function openRenameModal(id) {
+  const p = window.__products.find(x=>x.id===id);
+  if(!p) return;
+  renameModalProduct = p;
+  el('renameModalInfo').innerHTML = `
+    <div class="modal-prod-name">${escHtml(p.name)}</div>
+    <div class="modal-price-meta" style="margin-top:4px">Catégorie: ${CAT_LABELS[p.category]||'Autres'}</div>`;
+  el('renameInput').value = p.name;
+  el('renameModal').style.display='flex';
+  setTimeout(()=>{ el('renameInput').select(); },100);
+}
+window.openRenameModal = openRenameModal;
+
+function closeRenameModal() { el('renameModal').style.display='none'; renameModalProduct=null; }
+window.closeRenameModal = closeRenameModal;
+
+async function submitRename() {
+  const newName = el('renameInput').value.trim();
+  if(!renameModalProduct) return;
+  if(!newName) { showToast(t('toast_empty_name')); return; }
+  if(newName === renameModalProduct.name) { closeRenameModal(); return; }
+  const newCat = getCategory(newName);
+  const updated = {...renameModalProduct, name: newName, category: newCat};
+  try {
+    if(window.__db) await window.__setDoc(window.__doc(updated.id), updated);
+  } catch(e) {
+    window.__products = window.__products.map(p=>p.id===updated.id ? updated : p);
+    window.renderAll();
+  }
+  showToast(`${t('toast_renamed')} "${newName}"`);
+  closeRenameModal();
+}
+window.submitRename = submitRename;
+
+// ── ORDER ──
+function openOrderModal() {
+  
+  const subtotal = cart.reduce((s,i)=>s+(parseFloat(i.avg)||0)*i.qty,0);
+  const commission = subtotal*0.1;
+  const total = subtotal+10+commission;
+  
+  el('orderSummary').innerHTML = `
+    ${cart.map(i=>`<div class="order-item-row"><span>${escHtml(i.name)} ×${i.qty}</span><span style="color:var(--orange)">${((parseFloat(i.avg)||0)*i.qty).toFixed(2)} DH</span></div>`).join('')}
+    <div class="order-divider"></div>
+    <div class="order-item-row" style="color:var(--muted2)"><span>${t('order_delivery')}</span><span>10.00 DH</span></div>
+    <div class="order-item-row" style="color:var(--muted2)"><span>${t('order_commission')}</span><span>${commission.toFixed(2)} DH</span></div>
+    <div class="order-divider"></div>
+    <div class="order-total-row"><span>${t('order_total')}</span><span>${total.toFixed(2)} DH</span></div>`;
+  
+  el('orderModal').style.display='flex';
+  setTimeout(()=>el('orderName').focus(),100);
+}
+window.openOrderModal = openOrderModal;
+
+function closeOrderModal() { el('orderModal').style.display='none'; }
+window.closeOrderModal = closeOrderModal;
+
+async function sendWhatsApp() {
+  const name = el('orderName').value.trim();
+  const address = el('orderAddress').value.trim();
+  if(!name || !address) { showToast(t('toast_fill_order')); return; }
+  
+  const subtotal = cart.reduce((s,i)=>s+(parseFloat(i.avg)||0)*i.qty,0);
+  const commission = subtotal*0.1;
+  const total = subtotal+10+commission;
+  const lines = cart.map(i=>`• ${i.name} ×${i.qty} → ${((parseFloat(i.avg)||0)*i.qty).toFixed(2)} DH`).join('\n');
+  
+  const msg = `${t('wa_order_header')}\n\n👤 *${name}*\n📍 ${address}\n\n─────────────────\n${lines}\n─────────────────\n💰 ${t('wa_subtotal')}: ${subtotal.toFixed(2)} DH\n🚚 ${t('wa_delivery')}: 10.00 DH\n📊 ${t('wa_commission')}: ${commission.toFixed(2)} DH\n━━━━━━━━━━━━━━━\n✅ *${t('wa_total')}: ${total.toFixed(2)} DH*\n\n⏰ ${new Date().toLocaleString('fr-MA')}`;
+
+  const encoded = encodeURIComponent(msg);
+  const phone = '212768635851';
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const url = isMobile
+    ? `whatsapp://send?phone=${phone}&text=${encoded}`
+    : `https://wa.me/${phone}?text=${encoded}`;
+
+  try {
+    if(window.__addOrder) await window.__addOrder({
+      customer:name, address, items:cart.map(i=>({id:i.id,name:i.name,qty:i.qty,price:i.avg})),
+      subtotal, delivery:10, commission, total
+    });
+  } catch(e) { console.log('Order save error:',e); }
+
+  window.location.href = url;
+  setTimeout(()=>{ cart=[]; updateCartBadge(); renderAll(); closeOrderModal(); toggleCart(); showToast(t('toast_order_sent')); }, 1000);
+}
+window.sendWhatsApp = sendWhatsApp;
+
+// ── CART TOGGLE ──
+function toggleCart() {
+  const c = el('cart');
+  const o = el('cart-overlay');
+  const open = c.classList.toggle('open');
+  o.classList.toggle('open', open);
+}
+window.toggleCart = toggleCart;
+
+// ── UTILS ──
+function el(id) { return document.getElementById(id); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function showToast(msg) {
+  const t = el('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+window.showToast = showToast;
+
+// ── i18n ──
+const TRANSLATIONS = {
+  fr:{
+    nav_catalog:'Catalogue', nav_add:'+ Ajouter', nav_cart:'Panier',
+    hero_sub:'Marketplace collaborative · Prix en temps réel · Livraison rapide',
+    search_placeholder:'Rechercher un produit...',
+    stats_products:'Produits', stats_categories:'Catégories', stats_contrib:'Contributions', stats_cart:'Dans panier',
+    panel_title:'AJOUTER / CONTRIBUER UN PRIX',
+    label_name:'Nom du produit', label_price:'Prix observé (DH)', label_cat:'Catégorie',
+    cat_auto:'(auto-détectée · modifiable)',
+    btn_valider:'+ Valider',
+    filter_all:'🔥 Tout', filter_boissons:'☕ Boissons', filter_snacks:'🍿 Snacks', filter_laitier:'🧀 Laitiers', filter_boulangerie:'🥖 Boulangerie', filter_autres:'📦 Autres',
+    section_title:'TOUS LES PRODUITS',
+    card_avg:'prix moyen', card_contrib:'contribution', card_contribs:'contributions',
+    card_min:'Min', card_max:'Max', card_add:'+ Panier', card_added:'✓ Ajouté',
+    cart_title:'MON PANIER', cart_empty:'Votre panier est vide',
+    cart_subtotal:'Sous-total', cart_delivery:'Livraison', cart_commission:'Commission (10%)', cart_total:'TOTAL',
+    cart_wa:'Commander via WhatsApp',
+    price_modal_title:'CONTRIBUER UN PRIX', price_label:'Votre prix observé (DH)', price_placeholder:'Ex: 9.50',
+    price_submit:'✓ Contribuer ce prix', btn_cancel:'Annuler',
+    price_avg:'moy.', price_contrib:'contribution', price_contribs:'contributions',
+    rename_title:'✏️ RENOMMER LE PRODUIT', rename_label:'Nouveau nom', rename_placeholder:'Entrez le nouveau nom...', rename_submit:'✓ Renommer',
+    order_title:'FINALISER LA COMMANDE', order_name:'Nom & Prénom', order_name_ph:'Hassan El Idrissi',
+    order_address:'Adresse de livraison', order_address_ph:'Bureau, étage, ville...',
+    order_delivery:'Livraison', order_commission:'Commission 10%', order_total:'TOTAL FINAL',
+    order_wa:'📲 Envoyer la commande WhatsApp',
+    empty_title:'Produit introuvable', empty_sub:"Ce produit n'existe pas encore dans notre base.\nSoyez le premier à l'ajouter !",
+    empty_btn:'+ Ajouter ce produit',
+    toast_added:'ajouté ✓', toast_price_updated:'✓ Prix mis à jour — Merci pour votre contribution !',
+    toast_product_added:'✓ Produit ajouté au catalogue !', toast_fill:'⚠️ Veuillez remplir correctement tous les champs',
+    toast_price_contrib:'✓ Prix contribué — Merci !', toast_invalid_price:'⚠️ Prix invalide',
+    toast_renamed:'✓ Produit renommé en', toast_empty_name:'⚠️ Le nom ne peut pas être vide',
+    toast_order_sent:'✓ Commande envoyée via WhatsApp !', toast_fill_order:'⚠️ Nom et adresse requis',
+    fb_connected:'Firebase connecté', fb_local:'Mode local (Firebase indisponible)',
+    wa_order_header:'🍽️ *L.E — Nouvelle Commande*', wa_subtotal:'Sous-total', wa_delivery:'Livraison', wa_commission:'Commission (10%)', wa_total:'TOTAL',
+    footer:'Marketplace collaborative Maroc',
+  },
+  en:{
+    nav_catalog:'Catalog', nav_add:'+ Add', nav_cart:'Cart',
+    hero_sub:'Collaborative marketplace · Real-time prices · Fast delivery',
+    search_placeholder:'Search for a product...',
+    stats_products:'Products', stats_categories:'Categories', stats_contrib:'Contributions', stats_cart:'In cart',
+    panel_title:'ADD / CONTRIBUTE A PRICE',
+    label_name:'Product name', label_price:'Observed price (MAD)', label_cat:'Category',
+    cat_auto:'(auto-detected · editable)',
+    btn_valider:'+ Submit',
+    filter_all:'🔥 All', filter_boissons:'☕ Drinks', filter_snacks:'🍿 Snacks', filter_laitier:'🧀 Dairy', filter_boulangerie:'🥖 Bakery', filter_autres:'📦 Other',
+    section_title:'ALL PRODUCTS',
+    card_avg:'avg price', card_contrib:'contribution', card_contribs:'contributions',
+    card_min:'Min', card_max:'Max', card_add:'+ Cart', card_added:'✓ Added',
+    cart_title:'MY CART', cart_empty:'Your cart is empty',
+    cart_subtotal:'Subtotal', cart_delivery:'Delivery', cart_commission:'Commission (10%)', cart_total:'TOTAL',
+    cart_wa:'Order via WhatsApp',
+    price_modal_title:'CONTRIBUTE A PRICE', price_label:'Your observed price (MAD)', price_placeholder:'E.g. 9.50',
+    price_submit:'✓ Contribute this price', btn_cancel:'Cancel',
+    price_avg:'avg.', price_contrib:'contribution', price_contribs:'contributions',
+    rename_title:'✏️ RENAME PRODUCT', rename_label:'New name', rename_placeholder:'Enter new name...', rename_submit:'✓ Rename',
+    order_title:'PLACE YOUR ORDER', order_name:'Full Name', order_name_ph:'Hassan El Idrissi',
+    order_address:'Delivery address', order_address_ph:'Office, floor, city...',
+    order_delivery:'Delivery', order_commission:'Commission 10%', order_total:'FINAL TOTAL',
+    order_wa:'📲 Send order via WhatsApp',
+    empty_title:'Product not found', empty_sub:"This product doesn't exist yet.\nBe the first to add it!",
+    empty_btn:'+ Add this product',
+    toast_added:'added ✓', toast_price_updated:'✓ Price updated — Thank you!',
+    toast_product_added:'✓ Product added to catalog!', toast_fill:'⚠️ Please fill in all fields correctly',
+    toast_price_contrib:'✓ Price contributed — Thank you!', toast_invalid_price:'⚠️ Invalid price',
+    toast_renamed:'✓ Product renamed to', toast_empty_name:'⚠️ Name cannot be empty',
+    toast_order_sent:'✓ Order sent via WhatsApp!', toast_fill_order:'⚠️ Name and address required',
+    fb_connected:'Firebase connected', fb_local:'Local mode (Firebase unavailable)',
+    wa_order_header:'🍽️ *L.E — New Order*', wa_subtotal:'Subtotal', wa_delivery:'Delivery', wa_commission:'Commission (10%)', wa_total:'TOTAL',
+    footer:'Collaborative marketplace Morocco',
+  },
+  ar:{
+    nav_catalog:'الكتالوج', nav_add:'+ إضافة', nav_cart:'السلة',
+    hero_sub:'سوق تشاركي · أسعار فورية · توصيل سريع',
+    search_placeholder:'ابحث عن منتج...',
+    stats_products:'منتجات', stats_categories:'فئات', stats_contrib:'مساهمات', stats_cart:'في السلة',
+    panel_title:'إضافة / المساهمة بسعر',
+    label_name:'اسم المنتج', label_price:'السعر الملاحَظ (درهم)', label_cat:'الفئة',
+    cat_auto:'(يُكتشف تلقائياً · قابل للتعديل)',
+    btn_valider:'+ تأكيد',
+    filter_all:'🔥 الكل', filter_boissons:'☕ مشروبات', filter_snacks:'🍿 سناكس', filter_laitier:'🧀 ألبان', filter_boulangerie:'🥖 مخبزة', filter_autres:'📦 أخرى',
+    section_title:'جميع المنتجات',
+    card_avg:'متوسط السعر', card_contrib:'مساهمة', card_contribs:'مساهمات',
+    card_min:'أدنى', card_max:'أقصى', card_add:'+ السلة', card_added:'✓ أضيف',
+    cart_title:'سلتي', cart_empty:'سلتك فارغة',
+    cart_subtotal:'المجموع الفرعي', cart_delivery:'التوصيل', cart_commission:'العمولة (10%)', cart_total:'المجموع',
+    cart_wa:'اطلب عبر واتساب',
+    price_modal_title:'المساهمة بسعر', price_label:'سعرك الملاحَظ (درهم)', price_placeholder:'مثال: 9.50',
+    price_submit:'✓ تأكيد المساهمة', btn_cancel:'إلغاء',
+    price_avg:'متوسط', price_contrib:'مساهمة', price_contribs:'مساهمات',
+    rename_title:'✏️ إعادة تسمية المنتج', rename_label:'الاسم الجديد', rename_placeholder:'أدخل الاسم الجديد...', rename_submit:'✓ إعادة التسمية',
+    order_title:'إتمام الطلب', order_name:'الاسم الكامل', order_name_ph:'حسن الإدريسي',
+    order_address:'عنوان التوصيل', order_address_ph:'المكتب، الطابق، المدينة...',
+    order_delivery:'التوصيل', order_commission:'العمولة 10%', order_total:'المجموع النهائي',
+    order_wa:'📲 إرسال الطلب عبر واتساب',
+    empty_title:'المنتج غير موجود', empty_sub:'هذا المنتج غير موجود بعد في قاعدتنا.\nكن أول من يضيفه!',
+    empty_btn:'+ إضافة هذا المنتج',
+    toast_added:'أضيف ✓', toast_price_updated:'✓ تم تحديث السعر — شكراً!',
+    toast_product_added:'✓ أضيف المنتج للكتالوج!', toast_fill:'⚠️ يرجى ملء جميع الحقول بشكل صحيح',
+    toast_price_contrib:'✓ تمت المساهمة — شكراً!', toast_invalid_price:'⚠️ سعر غير صالح',
+    toast_renamed:'✓ تمت إعادة التسمية إلى', toast_empty_name:'⚠️ لا يمكن أن يكون الاسم فارغاً',
+    toast_order_sent:'✓ تم إرسال الطلب عبر واتساب!', toast_fill_order:'⚠️ الاسم والعنوان مطلوبان',
+    fb_connected:'Firebase متصل', fb_local:'وضع محلي (Firebase غير متاح)',
+    wa_order_header:'🍽️ *L.E — طلب جديد*', wa_subtotal:'المجموع الفرعي', wa_delivery:'التوصيل', wa_commission:'العمولة (10%)', wa_total:'المجموع',
+    footer:'سوق تشاركي — المغرب',
+  }
+};
+
+let currentLang = 'fr';
+
+function t(key) {
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS['fr'][key] || key;
+}
+
+function toggleLangMenu() {
+  el('langDropdown').classList.toggle('open');
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  el('langDropdown').classList.remove('open');
+  // Update flag & code
+  const flags = {fr:'🇫🇷',en:'🇬🇧',ar:'🇲🇦'};
+  const codes = {fr:'FR',en:'EN',ar:'AR'};
+  el('langFlag').textContent = flags[lang];
+  el('langCode').textContent = codes[lang];
+  // RTL for Arabic
+  document.documentElement.dir = lang==='ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  // Active state on options
+  document.querySelectorAll('.lang-option').forEach(o=>{
+    o.classList.toggle('active', o.dataset.lang===lang);
+  });
+  applyTranslations();
+  renderAll();
+}
+window.setLang = setLang;
+window.toggleLangMenu = toggleLangMenu;
+
+function applyTranslations() {
+  // Nav
+  el('tab-catalog').textContent = t('nav_catalog');
+  el('tab-add').textContent = t('nav_add');
+  // Hero
+  const heroSub = document.querySelector('.hero-sub');
+  if(heroSub) heroSub.textContent = t('hero_sub');
+  // Search
+  const si = el('searchInput');
+  if(si) si.placeholder = t('search_placeholder');
+  // Section title
+  const st = el('sectionTitle');
+  if(st) st.textContent = t('section_title');
+  // Stats
+  const statLabels = document.querySelectorAll('.stat-label');
+  const statKeys = ['stats_products','stats_categories','stats_contrib','stats_cart'];
+  statLabels.forEach((s,i)=>{ if(statKeys[i]) s.textContent=t(statKeys[i]); });
+  // Panel
+  const pt = document.querySelector('.panel-title');
+  if(pt) pt.firstChild.textContent = t('panel_title');
+  // Form labels
+  const labels = document.querySelectorAll('.form-field label');
+  if(labels[0]) labels[0].textContent = t('label_name');
+  if(labels[1]) labels[1].textContent = t('label_price');
+  // Cat label
+  const catLabel = document.querySelector('#add-panel label');
+  if(catLabel) catLabel.innerHTML = `${t('label_cat')} <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">${t('cat_auto')}</span>`;
+  // Submit btn
+  const sb = document.querySelector('.submit-btn');
+  if(sb) sb.innerHTML = `<span>+</span> ${t('btn_valider').replace('+ ','')}`;
+  // Filters
+  const filterMap = ['all','boissons','snacks','laitier','boulangerie','autres'];
+  document.querySelectorAll('.filter-btn').forEach((b,i)=>{ if(filterMap[i]) b.textContent=t('filter_'+filterMap[i]); });
+  // Cart
+  const ct = document.querySelector('.cart-title');
+  if(ct) ct.textContent = t('cart_title');
+  const wb = el('waBtn');
+  if(wb) wb.innerHTML = `🛒 ${t('cart_wa')}`;
+  // Footer
+  const f = document.querySelector('footer');
+  if(f) f.innerHTML = `<span>L.E</span> · ${t('footer')} · © 2025`;
+  // Cart static labels
+  const lSub = el('lSubtotal'); if(lSub) lSub.textContent = t('cart_subtotal');
+  const lDel = el('lDelivery'); if(lDel) lDel.textContent = t('cart_delivery');
+  const lCom = el('lCommission'); if(lCom) lCom.textContent = t('cart_commission');
+  const cartTotalEl = document.querySelector('.total-line.main span:first-child'); if(cartTotalEl) cartTotalEl.textContent = t('cart_total');
+  // WA cart button
+  const waBtnCart = el('waBtn'); if(waBtnCart) waBtnCart.innerHTML = `🛒 ${t('cart_wa')}`;
+  // Empty state
+  const et = el('empty-title'); if(et) et.textContent = t('empty_title');
+  const es = document.querySelector('#emptyState .empty-sub'); if(es) es.innerHTML = t('empty_sub').replace('\n','<br/>');
+  const eb2 = document.querySelector('.empty-btn'); if(eb2) eb2.textContent = t('empty_btn');
+  // Price modal
+  const pmt = document.querySelector('#priceModal .modal-title'); if(pmt) pmt.textContent = t('price_modal_title');
+  const pml = document.querySelector('#priceModal .modal-label'); if(pml) pml.textContent = t('price_label');
+  const pmi = el('priceContrib'); if(pmi) pmi.placeholder = t('price_placeholder');
+  const pmb = document.querySelector('#priceModal .btn-primary'); if(pmb) pmb.textContent = t('price_submit');
+  document.querySelectorAll('#priceModal .btn-secondary').forEach(b=>b.textContent=t('btn_cancel'));
+  // Rename modal
+  const rmt = document.querySelector('#renameModal .modal-title'); if(rmt) rmt.textContent = t('rename_title');
+  const rml = document.querySelector('#renameModal .modal-label'); if(rml) rml.textContent = t('rename_label');
+  const rmi = el('renameInput'); if(rmi) rmi.placeholder = t('rename_placeholder');
+  const rmb = document.querySelector('#renameModal .btn-primary'); if(rmb) rmb.textContent = t('rename_submit');
+  document.querySelectorAll('#renameModal .btn-secondary').forEach(b=>b.textContent=t('btn_cancel'));
+  // Order modal
+  const omt = document.querySelector('#orderModal .modal-title'); if(omt) omt.textContent = t('order_title');
+  const oLabels = document.querySelectorAll('#orderModal .modal-label');
+  if(oLabels[0]) oLabels[0].textContent = t('order_name');
+  if(oLabels[1]) oLabels[1].textContent = t('order_address');
+  const oni = el('orderName'); if(oni) oni.placeholder = t('order_name_ph');
+  const oai = el('orderAddress'); if(oai) oai.placeholder = t('order_address_ph');
+  const owb = document.querySelector('#orderModal .btn-primary'); if(owb) owb.textContent = t('order_wa');
+  document.querySelectorAll('#orderModal .btn-secondary').forEach(b=>b.textContent=t('btn_cancel'));
+}
+
+// Close lang dropdown on outside click
+document.addEventListener('click', e=>{
+  if(!el('langSwitcher').contains(e.target)) el('langDropdown').classList.remove('open');
+});
+
+// ── INIT ──
+setTimeout(()=>window.renderAll(), 100);
+</script>
+</body>
+</html>
